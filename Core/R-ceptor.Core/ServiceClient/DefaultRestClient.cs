@@ -27,7 +27,7 @@ namespace Rceptor.Core.ServiceClient
 
         #region Send
 
-        protected override async Task<HttpResponseMessage> SendAsync(RestRequestContext context)
+        protected override HttpResponseMessage SendInternal(RestRequestContext context)
         {
             HttpResponseMessage responseMessage;
 
@@ -37,7 +37,7 @@ namespace Rceptor.Core.ServiceClient
 
                 try
                 {
-                    responseMessage = await client.SendAsync(request);
+                    responseMessage = client.SendAsync(request).Result;
                 }
                 catch (Exception ex)
                 {
@@ -45,7 +45,7 @@ namespace Rceptor.Core.ServiceClient
                 }
             }
 
-            return await Task.FromResult(responseMessage);
+            return responseMessage;
         }
 
         #endregion

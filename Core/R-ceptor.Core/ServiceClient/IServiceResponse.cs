@@ -7,6 +7,8 @@ namespace Rceptor.Core.ServiceClient
     {
         HttpResponseMessage HttpResponse { get; }
         object GetContentObject();
+        T GetContentObject<T>();
+        bool IsSuccess();
     }
 
 }

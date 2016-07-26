@@ -39,7 +39,7 @@ namespace Rceptor.Core.ServiceProxy
 
                 using (var client = new DefaultRestClient(endPoint, clientHandlers))
                 {
-                    responseMessage = client.Send(context).Result;
+                    responseMessage = client.Send(context);
                 }
             }
             catch (Exception ex)

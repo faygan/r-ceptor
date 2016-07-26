@@ -68,7 +68,6 @@
     <Compile Include="ServiceClient\IServiceResponse.cs" />
     <Compile Include="ServiceClient\RestClient.cs" />
     <Compile Include="ServiceClient\RestRequestContext.cs" />
-    <Compile Include="ServiceClient\ServiceResponseExtensions.cs" />
     <Compile Include="ServiceClient\ServiceResponse.cs" />
     <Compile Include="ServiceProxy\ActionResponseTypeContext.cs" />
     <Compile Include="ServiceProxy\ActionRouteCollection.cs" />

@@ -7,7 +7,8 @@ namespace Rceptor.Core.ServiceClient
 
     public interface IRestClient : IDisposable
     {
-        Task<HttpResponseMessage> Send(RestRequestContext context);
+        HttpResponseMessage Send(RestRequestContext context);
+        Task<HttpResponseMessage> SendAsync(RestRequestContext context);
     }
 
 }

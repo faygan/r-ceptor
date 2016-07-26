@@ -32,13 +32,17 @@ namespace Rceptor.Core.ServiceClient
 
         #region Send
 
-        public async Task<HttpResponseMessage> Send(RestRequestContext context)
+        public HttpResponseMessage Send(RestRequestContext context)
         {
-            var response = await SendAsync(context);
+            var response = SendInternal(context);
             if (response != null)
                 return response;
-            return
-                await new Task<HttpResponseMessage>(() => new HttpResponseMessage(HttpStatusCode.InternalServerError));
+            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+        }
+
+        public async Task<HttpResponseMessage> SendAsync(RestRequestContext context)
+        {
+            return await new Task<HttpResponseMessage>(() => Send(context));
         }
 
         #endregion
@@ -47,15 +51,15 @@ namespace Rceptor.Core.ServiceClient
 
         public virtual void Dispose()
         {
-            GC.SuppressFinalize(this);
             ClientHandlers.ForEach(h => h.Dispose());
+            GC.SuppressFinalize(this);
         }
 
         #endregion
 
-        #region Abstract methods
+        #region Abstract
 
-        protected abstract Task<HttpResponseMessage> SendAsync(RestRequestContext context);
+        protected abstract HttpResponseMessage SendInternal(RestRequestContext context);
 
         #endregion
 

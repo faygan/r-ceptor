@@ -24,6 +24,12 @@ namespace Rceptor.Core.ServiceClient
 
         public HttpResponseMessage HttpResponse { get; protected set; }
 
+        public T GetContentObject<T>()
+        {
+            var result = GetContentObject();
+            return (T)result;
+        }
+
         public object GetContentObject()
         {
             if (HttpResponse == null)
@@ -36,7 +42,7 @@ namespace Rceptor.Core.ServiceClient
             if (HttpResponse.IsSuccessStatusCode)
             {
                 var responseContent = HttpResponse.Content;
-                
+
                 if (responseContent != null)
                 {
                     Task<object> contentObject;
@@ -59,6 +65,13 @@ namespace Rceptor.Core.ServiceClient
             }
 
             return null;
+        }
+
+        public bool IsSuccess()
+        {
+            if (HttpResponse != null)
+                return HttpResponse.IsSuccessStatusCode;
+            return false;
         }
     }
 }
