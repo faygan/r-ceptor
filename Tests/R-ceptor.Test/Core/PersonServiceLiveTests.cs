@@ -18,7 +18,7 @@ namespace Rceptor.Test.Core
     [TestClass]
     public class PersonServiceLiveTests
     {
-        private const string ServiceEndpointAddress = "http://localhost:49400";
+        private const string ServiceEndpointAddress = "http://localhost:51579";
         private IPersonService _personService;
 
         private readonly Func<ServiceBindingContext> _getBindingContext = () =>
@@ -34,7 +34,8 @@ namespace Rceptor.Test.Core
         [TestInitialize]
         public void InitializeTest()
         {
-            var channel = new Rceptor.Core.ServiceProxy.ChannelFactory<IPersonService>(new EndpointAddress(ServiceEndpointAddress), _getBindingContext());
+            var channel = new Rceptor.Core.ServiceProxy.ChannelFactory<IPersonService>(new EndpointAddress(ServiceEndpointAddress),
+                _getBindingContext());
             _personService = channel.CreateChannel();
         }
 
@@ -198,7 +199,7 @@ namespace Rceptor.Test.Core
         {
             foreach (var person in persons)
             {
-                Debug.WriteLine($"{person.Name} - {person.DeptId} - {person.PersonId}");
+                Debug.WriteLine($"{person.PersonId}: {person.Name} - {person.DeptId} - {person.DeptName}");
             }
         }
 
@@ -206,7 +207,7 @@ namespace Rceptor.Test.Core
         {
             foreach (var pay in pays)
             {
-                Debug.WriteLine($"{pay.Person.PersonId} - {pay.Person.Name} - {pay.Person.DeptId} - {pay.PayTotal} - {pay.PaymentDate}");
+                Debug.WriteLine($"{pay.Person.PersonId} - {pay.Person.Name} - {pay.Person.DeptName} - {pay.PayTotal} - {pay.PaymentDate}");
             }
         }
 

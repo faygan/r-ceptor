@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.ServiceModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rceptor.Core.ServiceClient;
@@ -31,6 +32,8 @@ namespace Rceptor.Test.Core
                 Console.WriteLine($"Route: {operation.Route}");
                 Console.WriteLine("------------------------------------------");
             }
+
+            Assert.IsTrue(serviceFactory.ServiceOperations.Any());
         }
 
         [TestMethod]
@@ -38,6 +41,7 @@ namespace Rceptor.Test.Core
         {
             var personService = new ChannelFactory<IPersonService>()
                 .CreateChannel(new EndpointAddress(_endPointAddress));
+
             Assert.IsNotNull(personService);
         }
 

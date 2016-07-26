@@ -16,7 +16,7 @@ namespace Rceptor.Test.Core
     [TestClass]
     public class PersonServiceRouteLessLiveTests
     {
-        private const string ServiceEndpointAddress = "http://localhost:49400";
+        private const string ServiceEndpointAddress = "http://localhost:51579";
         private IPersonServiceRouteLess _personService;
 
         private readonly Func<ServiceBindingContext> _getBindingContext = () =>
@@ -32,8 +32,13 @@ namespace Rceptor.Test.Core
         [TestInitialize]
         public void InitializeTest()
         {
-            var channel = new Rceptor.Core.ServiceProxy.ChannelFactory<IPersonServiceRouteLess>(new EndpointAddress(ServiceEndpointAddress), _getBindingContext());
+            var channel = new Rceptor.Core.
+                ServiceProxy.ChannelFactory<IPersonServiceRouteLess>(new EndpointAddress(ServiceEndpointAddress),
+                _getBindingContext());
+
             _personService = channel.CreateChannel();
+
+            Assert.IsNotNull(_personService);
         }
 
 
@@ -41,8 +46,8 @@ namespace Rceptor.Test.Core
         [TestMethod]
         public void get_person_with_dept_Id_test()
         {
-           var person = _personService.GetPersonWithDeptId(10, 3)
-                .GetContentObject<PersonDto>();
+            var person = _personService.GetPersonWithDeptId(10, 3)
+                 .GetContentObject<PersonDto>();
 
             Assert.IsNotNull(person);
             OutputPersons(new[] { person });
