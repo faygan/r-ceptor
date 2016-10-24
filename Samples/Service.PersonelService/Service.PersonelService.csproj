@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="App_Data\PersonDataProvider.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Controllers\PersonRouteLessController.cs" />
     <Compile Include="Global.asax.cs">
@@ -97,7 +98,9 @@
     <Compile Include="Models\PersonDto.cs" />
     <Compile Include="Models\PersonPayInfoDto.cs" />
     <Compile Include="Models\PersonQueryContext.cs" />
+    <Compile Include="Models\VerifyUserTokenModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceContract\IAuthenticationService.cs" />
     <Compile Include="ServiceContract\IPersonService.cs" />
     <Compile Include="ServiceContract\IPersonServiceRouteLess.cs" />
   </ItemGroup>
