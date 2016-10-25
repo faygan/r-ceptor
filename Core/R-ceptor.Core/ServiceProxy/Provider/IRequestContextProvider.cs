@@ -5,6 +5,6 @@ namespace Rceptor.Core.ServiceProxy.Provider
 {
     public interface IRequestContextProvider
     {
-        RestRequestContext GetRequestContext(object[] arguments, MethodInfo invokeMethod = null);
+        RestRequestContext GetRequestContext(object[] callArguments, MethodInfo invokeMethod = null);
     }
 }
