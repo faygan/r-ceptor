@@ -23,8 +23,9 @@ namespace Rceptor.Core.ServiceProxy
 
         #region IRequestContextProvider Members
 
-        public RestRequestContext GetRequestContext(object[] arguments, MethodInfo invokeMethod = null)
+        public RestRequestContext GetRequestContext(object[] callArguments, MethodInfo invokeMethod = null)
         {
+            var arguments = callArguments ?? new object[] { };
             var bindingContext = ServiceContract.ServiceBindingContext;
 
             var context = new RestRequestContext
