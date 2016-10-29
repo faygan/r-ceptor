@@ -7,11 +7,13 @@ using System.Web.Http;
 using Castle.Core.Internal;
 using Castle.DynamicProxy;
 using Rceptor.Core.ServiceProxy.Interceptor;
+using Rceptor.Core.ServiceProxy.Provider;
+using Rceptor.Core.Utils;
 
 namespace Rceptor.Core.ServiceProxy
 {
 
-    public class ChannelFactory<TContract>
+    public class ChannelFactory<TContract> : IServiceOperationContainer
         where TContract : class
     {
 
@@ -23,7 +25,6 @@ namespace Rceptor.Core.ServiceProxy
         public Type ContractType { get; }
         public ContractDescription ServiceContract { get; private set; }
         public IEnumerable<OperationDescription> ServiceOperations => ServiceContract?.Operations;
-
 
         #endregion
 
@@ -155,6 +156,45 @@ namespace Rceptor.Core.ServiceProxy
         }
 
         #endregion
+
+        #region IServiceOperationContainer members
+
+        public OperationDescription GetOperationDescription(string methodName, string routeTemplate = null)
+        {
+            if (ServiceOperations == null)
+                return null;
+
+            OperationDescription exists = null;
+
+            foreach (var operation in ServiceOperations)
+            {
+                if (operation.Name != methodName)
+                    continue;
+
+                if (!string.IsNullOrEmpty(routeTemplate))
+                {
+                    if (operation.Route == routeTemplate)
+                        exists = operation;
+                }
+                else
+                {
+                    exists = operation;
+                }
+
+                if (exists != null)
+                    break;
+            }
+
+            return exists;
+        }
+
+        public OperationDescription GetOperationDescription(MethodInfo method)
+        {
+            return ServiceOperations?.FirstOrDefault(p => p.MethodInfo.IsEquivalent(method));
+        }
+
+        #endregion
+
     }
 
 }

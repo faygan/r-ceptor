@@ -93,11 +93,13 @@
     <Compile Include="ServiceProxy\Provider\IRoute.cs" />
     <Compile Include="ServiceProxy\Provider\IRouteProvider.cs" />
     <Compile Include="ServiceProxy\Provider\IServiceBindingContextProvider.cs" />
+    <Compile Include="ServiceProxy\Provider\IServiceOperationContainer.cs" />
     <Compile Include="ServiceProxy\ServiceBindingContext.cs" />
     <Compile Include="ServiceProxy\ServiceContractAttribute.cs" />
     <Compile Include="ServiceProxy\ServiceInvoker.cs" />
     <Compile Include="Utils\ClientFactory.cs" />
     <Compile Include="Utils\RoutingHelper.cs" />
+    <Compile Include="Utils\TypeHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
