@@ -23,6 +23,16 @@ namespace Rceptor.Core.ServiceProxy
 
         #region IRequestContextProvider Members
 
+        public string GetActionRoute(object[] callArguments)
+        {
+            return BuildActionRoute(MethodInfo, callArguments ?? new object[] { });
+        }
+
+        public string GetCompleteActionRoute(object[] callArguments)
+        {
+            return CompleteActionUri(MethodInfo, callArguments ?? new object[] { });
+        }
+
         public RestRequestContext GetRequestContext(object[] callArguments, MethodInfo invokeMethod = null)
         {
             var arguments = callArguments ?? new object[] { };
@@ -31,7 +41,7 @@ namespace Rceptor.Core.ServiceProxy
             var context = new RestRequestContext
             {
                 ApiMethods = ActionBinding.AcceptHttpMethods,
-                ActionUri = BuilRouteAddress(MethodInfo ?? invokeMethod, arguments),
+                ActionUri = CompleteActionUri(MethodInfo ?? invokeMethod, arguments),
                 ContentData = ActionBinding.ActionParameters.Where(p => p.InBody)
                         .ToDictionary(r => r.Name, r => arguments[r.Order]),
                 MediaTypes = bindingContext.SupportedMediaTypes,
@@ -41,7 +51,24 @@ namespace Rceptor.Core.ServiceProxy
             return context;
         }
 
-        private string BuilRouteAddress(MethodInfo method, IReadOnlyList<object> arguments)
+        private string CompleteActionUri(MethodInfo method, IReadOnlyList<object> arguments)
+        {
+            var routePrefix = ServiceContract.RoutePrefix;
+            var actionRoute = BuildActionRoute(method, arguments);
+
+            var serviceUri = "";
+
+            if (!string.IsNullOrEmpty(routePrefix) && !string.IsNullOrEmpty(actionRoute))
+                serviceUri = $"{routePrefix}/{actionRoute}";
+            else if (string.IsNullOrEmpty(routePrefix))
+                serviceUri = $"{actionRoute}";
+            else if (string.IsNullOrEmpty(actionRoute))
+                serviceUri = $"{routePrefix}";
+
+            return serviceUri;
+        }
+
+        private string BuildActionRoute(MethodInfo method, IReadOnlyList<object> arguments)
         {
             var targetMethod = method;
 
@@ -122,9 +149,7 @@ namespace Rceptor.Core.ServiceProxy
 
             #endregion 
 
-            var serviceUri = "";
             var actionRoute = "";
-            var routePrefix = ServiceContract.RoutePrefix;
 
             if (rootRoutes.Any() || uriParameterRoutes.Any())
             {
@@ -190,14 +215,7 @@ namespace Rceptor.Core.ServiceProxy
                 }
             }
 
-            if (!string.IsNullOrEmpty(routePrefix) && !string.IsNullOrEmpty(actionRoute))
-                serviceUri = $"{routePrefix}/{actionRoute}";
-            else if (string.IsNullOrEmpty(routePrefix))
-                serviceUri = $"{actionRoute}";
-            else if (string.IsNullOrEmpty(actionRoute))
-                serviceUri = $"{routePrefix}";
-
-            return serviceUri;
+            return actionRoute;
         }
 
         #endregion
