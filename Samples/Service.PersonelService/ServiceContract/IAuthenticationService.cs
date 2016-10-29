@@ -16,6 +16,11 @@ namespace Service.PersonelService.ServiceContract
         [ResponseType(typeof(VerifyUserTokenModel))]
         IServiceResponse VerifyUserAuth();
 
+        [HttpGet]
+        [Route("auth/{scope:alpha}")]
+        [ResponseType(typeof(object))]
+        IServiceResponse Authentiation(string scope, string userName, string pass);
+
     }
 
 }
