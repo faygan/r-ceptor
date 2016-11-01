@@ -19,13 +19,8 @@ namespace Rceptor.Test.Core
             var contractType = typeof(IAuthenticationService);
             var method = contractType.GetMethod("Authentication");
 
-            var routeBuildOptions = new ActionRouteGenerationOptions
-            {
-                StringTypesDefaultRouteGenerationType = ApiRouteAddressType.RESTFull
-            };
-
             var routeProvider = new DefaultRouteProvider(method);
-            var routeParts = routeProvider.GetRoutes(routeBuildOptions);
+            var routeParts = routeProvider.GetRoutes();
 
             Console.WriteLine("Route template : {0}", routeProvider.RouteTemplate);
             Console.WriteLine("Method signature: Authentiation(string scope, string userName, string pass)");

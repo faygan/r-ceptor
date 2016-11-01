@@ -37,7 +37,7 @@ namespace Rceptor.Core.ServiceProxy
 
             var routeProvider = new DefaultRouteProvider(context.ActionMethod);
             binding.RouteTemplate = routeProvider.RouteTemplate;
-            binding.ActionParameters = routeProvider.GetRoutes(context.RouteBuildOptions);
+            binding.ActionParameters = routeProvider.GetRoutes();
 
             return (T)(object)binding;
         }

@@ -30,14 +30,9 @@ namespace Rceptor.Test.Core
             var contractType = typeof(IPersonService);
             var method = contractType.GetMethod("GetPerson");
 
-            var routeBuildOptions = new ActionRouteGenerationOptions
-            {
-                StringTypesDefaultRouteGenerationType = ApiRouteAddressType.RESTFull
-            };
-
             var routeProvider = new DefaultRouteProvider(method);
             var template = routeProvider.RouteTemplate;
-            var routeParts = routeProvider.GetRoutes(routeBuildOptions);
+            var routeParts = routeProvider.GetRoutes();
 
             Console.WriteLine("Route template : {0}", template);
 
@@ -60,12 +55,10 @@ namespace Rceptor.Test.Core
             var contractType = typeof(IPersonService);
             var method = contractType.GetMethod("GetPersonsDepartmansInfo");
 
-
             var routeProvider = new DefaultRouteProvider(method);
             var template = routeProvider.RouteTemplate;
-            var routeBuildOptions = new ActionRouteGenerationOptions { StringTypesDefaultRouteGenerationType = ApiRouteAddressType.RESTFull };
 
-            var routeParts = routeProvider.GetRoutes(routeBuildOptions);
+            var routeParts = routeProvider.GetRoutes();
 
             Console.WriteLine("Route template : {0}", template);
 
@@ -88,14 +81,9 @@ namespace Rceptor.Test.Core
             var contractType = typeof(IPersonServiceRouteLess);
             var method = contractType.GetMethod("GetActivePersonsByContext");
 
-            var routeBuildOptions = new ActionRouteGenerationOptions
-            {
-                StringTypesDefaultRouteGenerationType = ApiRouteAddressType.RESTFull
-            };
-
             var routeProvider = new DefaultRouteProvider(method);
             var template = routeProvider.RouteTemplate;
-            var routeParts = routeProvider.GetRoutes(routeBuildOptions);
+            var routeParts = routeProvider.GetRoutes();
 
             Console.WriteLine("Route template : {0}", template);
 

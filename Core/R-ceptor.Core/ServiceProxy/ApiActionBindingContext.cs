@@ -7,10 +7,8 @@ namespace Rceptor.Core.ServiceProxy
         public ApiActionBindingContext(MethodInfo actionMethod, ActionRouteGenerationOptions routeBuildOptions)
         {
             ActionMethod = actionMethod;
-            RouteBuildOptions = routeBuildOptions;
         }
 
         public MethodInfo ActionMethod { get; set; }
-        public ActionRouteGenerationOptions RouteBuildOptions { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace Rceptor.Core.ServiceProxy
 
         public string RouteTemplate { get; }
 
-        public ActionRouteCollection GetRoutes(ActionRouteGenerationOptions routeOptions)
+        public ActionRouteCollection GetRoutes()
         {
             var routes = new ActionRouteCollection();
 
