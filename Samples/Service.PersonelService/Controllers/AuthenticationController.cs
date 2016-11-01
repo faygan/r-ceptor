@@ -22,8 +22,8 @@ namespace Service.PersonelService.Controllers
         }
 
         [HttpGet]
-        [Route("auth/{scope:alpha}/{pass}")]
-        public IHttpActionResult Authentiation(string scope, string userName, string pass)
+        [Route("auth/scope/{scope:alpha}/{pass}")]
+        public IHttpActionResult Authentication(string scope, string userName, string pass)
         {
             return Ok(new
             {

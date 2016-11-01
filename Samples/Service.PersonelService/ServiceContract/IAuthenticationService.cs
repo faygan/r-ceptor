@@ -17,9 +17,9 @@ namespace Service.PersonelService.ServiceContract
         IServiceResponse VerifyUserAuth();
 
         [HttpGet]
-        [Route("auth/{scope:alpha}")]
+        [Route("auth/scope/{scope:alpha}/{pass}")]
         [ResponseType(typeof(object))]
-        IServiceResponse Authentiation(string scope, string userName, string pass);
+        IServiceResponse Authentication(string scope, string userName, string pass);
 
     }
 
