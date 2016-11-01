@@ -7,11 +7,15 @@ using System.Web.Http;
 using System.Web.Http.Routing;
 using Castle.Core.Internal;
 using Rceptor.Core.ServiceProxy.Provider;
+using Rceptor.Core.Utils;
 
 namespace Rceptor.Core.ServiceProxy
 {
 
-    public class DefaultRouteProvider : IRouteProvider
+    /// <summary>
+    /// Default route meta provider.
+    /// </summary>
+    public class DefaultRouteProvider : IRouteInfoProvider
     {
 
         #region Fields
@@ -22,9 +26,7 @@ namespace Rceptor.Core.ServiceProxy
 
         #region Properties
 
-        public string RouteTemplate { get; }
-
-        public bool IsRouteProvided { get; }
+        private bool IsRouteProvided { get; }
 
         #endregion
 
@@ -46,97 +48,79 @@ namespace Rceptor.Core.ServiceProxy
 
         #region IRouteProvider Members
 
+        public string RouteTemplate { get; }
+
         public ActionRouteCollection GetRoutes(ActionRouteGenerationOptions routeOptions)
         {
             var routes = new ActionRouteCollection();
 
-            // Complete routes from method parameters. For request content data and not in route templates..
-            var methodRoutes = new ActionRouteCollection(BuildRouteFromActionMethod(routeOptions.StringTypesDefaultRouteGenerationType));
+            // Complete routes from method parameters. For request content data and not provided by route templates..
+            var methodRouteEntries = GetMethodParametersAsRouteEntries();
+            var methodRoutesCollection = new ActionRouteCollection(methodRouteEntries);
 
             if (IsRouteProvided)
             {
-                var metaRoutes = new List<ApiActionRoute>();
+                var completeRouteEntries = new List<RouteEntry>();
 
-                var routesFromTemplate = BuildRouteFromRouteTemplate();
+                // Get route entries from route template.
+                var routesFromTemplate = GetRouteEntriesFromTemplate();
+                var templateRoutes = routesFromTemplate as RouteEntry[] ?? routesFromTemplate.ToArray();
 
-                var methodRoutesExceptTemplate = methodRoutes
-                    .Where(p => routesFromTemplate.All(t => t.Name != p.Name))
-                    .ToArray();
+                var methodRoutesExceptTemplate = methodRoutesCollection
+                    .Except(templateRoutes, new RouteEntryComparer());
 
-                methodRoutesExceptTemplate.ForEach(route =>
-                {
-                    if (!route.InBody && !route.IsComplexType)
-                    {
-                        route.AsUriAddress = true;
-                    }
-                });
-
-                // Route meta data from route template description
-                metaRoutes.AddRange(routesFromTemplate);
+                // Route meta data from route template description.
+                completeRouteEntries.AddRange(templateRoutes);
 
                 // Route meta data from method parameters.
-                metaRoutes.AddRange(methodRoutesExceptTemplate);
+                completeRouteEntries.AddRange(methodRoutesExceptTemplate);
 
-                routes.AddRange(metaRoutes);
+                SetOrderRouteEntries(completeRouteEntries.ToArray());
+
+                routes.AddRange(completeRouteEntries);
             }
             else
             {
-                methodRoutes.ForEach(route =>
-                {
-                    if (!route.InBody && !route.IsComplexType)
-                    {
-                        route.AsUriAddress = true;
-                    }
-                });
-
-                routes.AddRange(methodRoutes);
+                routes.AddRange(methodRoutesCollection);
             }
 
-            return routes;
+            return new ActionRouteCollection(routes.OrderBy(r => r.Order));
         }
 
         #endregion
 
         #region Routes Data Generation
 
-        private IEnumerable<ApiActionRoute> BuildRouteFromActionMethod(ApiRouteAddressType stringTypesDefaultRouteGenerationType)
+        private IEnumerable<RouteEntry> GetMethodParametersAsRouteEntries()
         {
             var routes = _actionMethod.GetParameters()
+                .OrderBy(p => p.Position)
                 .Select((parameter, i) =>
                 {
-                    var route = new ApiActionRoute
+                    var route = new RouteEntry
                     {
-                        Order = parameter.Position,
-                        IsVariable = true,
                         Name = parameter.Name,
-                        IsOptional = parameter.IsOptional,
+                        IsVariable = true,
                         DefaultValue = parameter.DefaultValue,
-                        ParameterType = parameter.ParameterType
+                        Order = parameter.Position,
+                        IsOptional = parameter.IsOptional,
+                        ParameterType = parameter.ParameterType,
+                        InTemplate = false,
+                        IsQuerySegment = true,
+                        IsComplexType = !parameter.ParameterType.IsValueType
                     };
 
-                    if (route.ParameterType.IsValueType)
+                    if (parameter.HasAttribute<FromUriAttribute>())
                     {
-                        route.IsComplexType = false;
+                        route.InBody = false;
                     }
                     else
                     {
-                        if (route.ParameterType == typeof(string))
+                        if (parameter.HasAttribute<FromBodyAttribute>())
                         {
-                            route.IsComplexType = stringTypesDefaultRouteGenerationType == ApiRouteAddressType.RESTFull;
+                            route.InBody = true;
+                            route.IsQuerySegment = false;
                         }
-                        else
-                        {
-                            route.IsComplexType = true;
-                        }
-                    }
-
-                    if (route.IsComplexType)
-                    {
-                        route.InBody = !parameter.HasAttribute<FromUriAttribute>();
-                    }
-                    else
-                    {
-                        route.InBody = parameter.HasAttribute<FromBodyAttribute>();
                     }
 
                     return route;
@@ -145,60 +129,88 @@ namespace Rceptor.Core.ServiceProxy
             return routes;
         }
 
-        private IEnumerable<ApiActionRoute> BuildRouteFromRouteTemplate()
+        public IEnumerable<RouteEntry> GetRouteEntriesFromTemplate()
         {
-            if (string.IsNullOrEmpty(RouteTemplate)) yield break;
+            if (string.IsNullOrEmpty(RouteTemplate))
+                yield break;
 
             var routeParts = RouteTemplate.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var part in routeParts)
+
+            for (var i = 0; i < routeParts.Length; i++)
             {
-                yield return GetApiActionRoutePartInfo(part);
+                yield return Convert2RouteEntry(routeParts[i], i);
             }
         }
 
-        public ApiActionRoute GetApiActionRoutePartInfo(string routePartTemplate)
+        private RouteEntry Convert2RouteEntry(string routePart, int routeIndex)
         {
-            var routePart = new ApiActionRoute
-            {
-                IsVariable = routePartTemplate.StartsWith("{") && routePartTemplate.EndsWith("}")
-            };
+            var isVariable = routePart.StartsWith("{") && routePart.EndsWith("}");
 
-            if (!routePart.IsVariable)
+            if (!isVariable)
             {
-                routePart.Name = routePartTemplate;
-                return routePart;
+                return new RouteEntry
+                {
+                    Name = routePart,
+                    IsQuerySegment = false,
+                    IsVariable = false,
+                    Order = routeIndex,
+                    InBody = false,
+                    IsComplexType = false,
+                    InTemplate = true
+                };
             }
 
-            var startPos = routePartTemplate.IndexOf("{", StringComparison.Ordinal);
-            var endPos = routePartTemplate.LastIndexOf("}", StringComparison.Ordinal);
+            var routeEntry = new RouteEntry
+            {
+                IsVariable = true,
+                Order = routeIndex,
+                IsQuerySegment = false,
+                InBody = false,
+                IsComplexType = false,
+                InTemplate = true
+            };
+
+            var startPos = routePart.IndexOf("{", StringComparison.OrdinalIgnoreCase);
+            var endPos = routePart.LastIndexOf("}", StringComparison.OrdinalIgnoreCase);
 
             try
             {
-                var routeInfo = routePartTemplate.Substring(startPos + 1, endPos - 1);
-                var routeDescription = routeInfo.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                var routeEntryInfo = routePart.Substring(startPos + 1, endPos - 1);
+                var routeDescription = routeEntryInfo.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (routeDescription.Length > 0)
                 {
-                    routePart.Name = routeDescription[0];
-                    routePart.Order = GetActionMethodParameterOrder(routePart.Name);
+                    routeEntry.Name = routeDescription[0];
                 }
 
                 if (routeDescription.Length > 1)
                 {
-                    routePart.IsOptional = routeDescription[1].Contains("?");
-                    routePart.TypeConstraint = routeDescription[1];
+                    routeEntry.IsOptional = routeDescription[1].Contains("?");
+                    routeEntry.TypeConstraint = routeDescription[1];
 
                     var defaultValueInfo = routeDescription[1].Split('=');
 
                     if (defaultValueInfo.Length > 1)
                     {
-                        routePart.DefaultValue = defaultValueInfo[1];
+                        routeEntry.DefaultValue = defaultValueInfo[1];
                     }
                 }
 
                 if (routeDescription.Length > 2)
                 {
-                    routePart.RouteConstraint = routeDescription[2];
+                    routeEntry.RouteConstraint = routeDescription[2];
+                }
+
+                if (!string.IsNullOrEmpty(routeEntry.Name))
+                {
+                    var methodParameters = _actionMethod.GetParameters();
+                    var parameter = methodParameters.FirstOrDefault(p => p.Name == routeEntry.Name);
+
+                    if (parameter != null)
+                    {
+                        routeEntry.ParameterType = parameter.ParameterType;
+                        routeEntry.IsComplexType = !routeEntry.ParameterType.IsValueType;
+                    }
                 }
             }
             catch (Exception ex)
@@ -206,22 +218,7 @@ namespace Rceptor.Core.ServiceProxy
                 Debug.WriteLine($"Error occurred in getting route informations. {ex.Message}");
             }
 
-            return routePart;
-        }
-
-        private int GetActionMethodParameterOrder(string parameterName)
-        {
-            var parameterOrder = -1;
-
-            var parameters = _actionMethod.GetParameters();
-            var routePartParameter = parameters.FirstOrDefault(p => p.Name == parameterName);
-
-            if (routePartParameter != null)
-            {
-                parameterOrder = routePartParameter.Position;
-            }
-
-            return parameterOrder;
+            return routeEntry;
         }
 
         private string GetRouteTemplate(out bool existsRouteAttr)
@@ -250,6 +247,30 @@ namespace Rceptor.Core.ServiceProxy
             }
 
             return routeTemplate;
+        }
+
+        private void SetOrderRouteEntries(RouteEntry[] routeEntries)
+        {
+            var segmentedEntries = routeEntries.Where(f => f.IsQuerySegment).ToArray();
+
+            if (!segmentedEntries.Any())
+                return;
+
+            var parameters = _actionMethod.GetParameters();
+            var maxOrderOfEntries = routeEntries.Where(f => !f.IsQuerySegment).Max(p => p.Order);
+
+            foreach (var entry in segmentedEntries)
+            {
+                var parameter = parameters.FirstOrDefault(p => p.Name == entry.Name);
+
+                if (parameter == null)
+                {
+                    entry.Order = 999;
+                    continue;
+                }
+
+                entry.Order = ++maxOrderOfEntries;
+            }
         }
 
         #endregion

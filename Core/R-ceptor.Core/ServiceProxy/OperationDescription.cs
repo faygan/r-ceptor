@@ -112,7 +112,7 @@ namespace Rceptor.Core.ServiceProxy
                     {
                         if (!routePart.IsComplexType)
                         {
-                            if (routePart.AsUriAddress)
+                            if (routePart.IsQuerySegment)
                             {
                                 uriParameterRoutes.Add(routePart.Name, routeData.Value.ToString());
                             }
@@ -153,7 +153,8 @@ namespace Rceptor.Core.ServiceProxy
 
             if (rootRoutes.Any() || uriParameterRoutes.Any())
             {
-                if (ActionBinding.OperationAddressType == ApiRouteAddressType.RESTFull)
+                //if (ActionBinding.OperationAddressType == ApiRouteAddressType.RESTFull)
+                if (1 == 1)
                 {
                     actionRoute = rootRoutes.Values.AsEnumerable().Aggregate((p, pp) => $"{p}/{pp}");
 

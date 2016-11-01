@@ -6,19 +6,19 @@ using Castle.Core.Internal;
 namespace Rceptor.Core.ServiceProxy
 {
 
-    public class ActionRouteCollection : ICollection<ApiActionRoute>
+    public class ActionRouteCollection : ICollection<RouteEntry>
     {
 
-        private readonly ICollection<ApiActionRoute> _innerCollection;
+        private readonly ICollection<RouteEntry> _innerCollection;
 
         public ActionRouteCollection()
         {
-            _innerCollection = new List<ApiActionRoute>();
+            _innerCollection = new List<RouteEntry>();
         }
 
-        public ActionRouteCollection(IEnumerable<ApiActionRoute> routes)
+        public ActionRouteCollection(IEnumerable<RouteEntry> routes)
         {
-            _innerCollection = new List<ApiActionRoute>();
+            _innerCollection = new List<RouteEntry>();
 
             if (routes != null)
             {
@@ -27,7 +27,7 @@ namespace Rceptor.Core.ServiceProxy
             }
         }
 
-        public IEnumerator<ApiActionRoute> GetEnumerator()
+        public IEnumerator<RouteEntry> GetEnumerator()
         {
             return _innerCollection.GetEnumerator();
         }
@@ -37,12 +37,12 @@ namespace Rceptor.Core.ServiceProxy
             return GetEnumerator();
         }
 
-        public void Add(ApiActionRoute item)
+        public void Add(RouteEntry item)
         {
             _innerCollection.Add(item);
         }
 
-        public void AddRange(IEnumerable<ApiActionRoute> items)
+        public void AddRange(IEnumerable<RouteEntry> items)
         {
             items.ForEach(Add);
         }
@@ -52,17 +52,17 @@ namespace Rceptor.Core.ServiceProxy
             _innerCollection.Clear();
         }
 
-        public bool Contains(ApiActionRoute item)
+        public bool Contains(RouteEntry item)
         {
             return _innerCollection.Contains(item);
         }
 
-        public void CopyTo(ApiActionRoute[] array, int arrayIndex)
+        public void CopyTo(RouteEntry[] array, int arrayIndex)
         {
             _innerCollection.CopyTo(array, arrayIndex);
         }
 
-        public bool Remove(ApiActionRoute item)
+        public bool Remove(RouteEntry item)
         {
             return _innerCollection.Remove(item);
         }

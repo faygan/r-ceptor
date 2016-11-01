@@ -75,7 +75,7 @@
     <Compile Include="ServiceProxy\ApiActionBinding.cs" />
     <Compile Include="ServiceProxy\ApiActionBindingContext.cs" />
     <Compile Include="ServiceProxy\ApiActionBindingFactory.cs" />
-    <Compile Include="ServiceProxy\ApiActionRoute.cs" />
+    <Compile Include="ServiceProxy\RouteEntry.cs" />
     <Compile Include="ServiceProxy\ApiRouteAddressType.cs" />
     <Compile Include="ServiceProxy\BindingService.cs" />
     <Compile Include="ServiceProxy\ChannelFactory.cs" />
@@ -91,9 +91,10 @@
     <Compile Include="ServiceProxy\Provider\IBindingFactory.cs" />
     <Compile Include="ServiceProxy\Provider\IRequestContextProvider.cs" />
     <Compile Include="ServiceProxy\Provider\IRoute.cs" />
-    <Compile Include="ServiceProxy\Provider\IRouteProvider.cs" />
+    <Compile Include="ServiceProxy\Provider\IRouteInfoProvider.cs" />
     <Compile Include="ServiceProxy\Provider\IServiceBindingContextProvider.cs" />
     <Compile Include="ServiceProxy\Provider\IServiceOperationContainer.cs" />
+    <Compile Include="Utils\RouteEntryComparer.cs" />
     <Compile Include="ServiceProxy\ServiceBindingContext.cs" />
     <Compile Include="ServiceProxy\ServiceContractAttribute.cs" />
     <Compile Include="ServiceProxy\ServiceInvoker.cs" />

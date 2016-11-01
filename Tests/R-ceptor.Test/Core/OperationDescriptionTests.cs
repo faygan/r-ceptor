@@ -110,7 +110,7 @@ namespace Rceptor.Test.Core
             var asUriRoute = apiActionRoutes.FirstOrDefault(f => f.Name == "onlyActive");
 
             Assert.IsTrue(asUriRoute != null);
-            Assert.IsTrue(asUriRoute.AsUriAddress);
+            Assert.IsTrue(asUriRoute.IsQuerySegment);
         }
     }
 }
