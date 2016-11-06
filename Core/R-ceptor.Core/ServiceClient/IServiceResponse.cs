@@ -1,4 +1,5 @@
 ﻿using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Rceptor.Core.ServiceClient
 {
@@ -8,6 +9,7 @@ namespace Rceptor.Core.ServiceClient
         HttpResponseMessage HttpResponse { get; }
         object GetContentObject();
         T GetContentObject<T>();
+        Task<string> GetRawContent();
         bool IsSuccess();
     }
 

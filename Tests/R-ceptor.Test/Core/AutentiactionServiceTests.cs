@@ -44,12 +44,6 @@ namespace Rceptor.Test.Core
         public void contract_operaitons_test()
         {
             Assert.IsTrue(_channel.ServiceOperations.Any());
-
-            foreach (var operation in _channel.ServiceOperations)
-            {
-                var uri = operation.GetRequestContext().ActionUri;
-                Console.WriteLine("Operation:" + operation.Name + "    -> " + "Uri:" + uri);
-            }
         }
 
         [TestMethod]
@@ -82,14 +76,15 @@ namespace Rceptor.Test.Core
         [TestMethod]
         public void authentication_user_route_test()
         {
-            // [Route("verifyAuth")]
+            // [Route("auth/scope/{scope:alpha}/{pass}")]
 
-            const string requiredRouteResult = "auth/sampleScope?userName=admin&pass=1234";
-            const string requiredCompleteRouteResult = "api/account/auth/sampleScope?userName=admin&pass=1234";
+            const string expectedRouteResult = "auth/scope/sampleScope/1234?userName=admin";
+            const string expectedCompleteRouteResult = "api/account/" + expectedRouteResult;
 
-            var operation = _channel.GetOperationDescription(_channel.ContractType.GetMethod("Authentiation"));
+            var targetMethod = _channel.ContractType.GetMethod("Authentication", new Type[] { typeof(string), typeof(string), typeof(string) });
+            var operation = _channel.GetOperationDescription(targetMethod);
 
-            Assert.IsNotNull(operation, "Found operation :)");
+            Assert.IsNotNull(operation, "Operation found!)");
 
             Console.WriteLine("Route template : {0}", operation.Route);
 
@@ -105,8 +100,8 @@ namespace Rceptor.Test.Core
             Console.WriteLine("Action rest uri: " + actionRouteResult);
             Console.WriteLine("Action complete rest uri: " + completeActionRouteResult);
 
-            Assert.IsTrue(requiredRouteResult == actionRouteResult, "Route result not matched!..");
-            Assert.IsTrue(requiredCompleteRouteResult == completeActionRouteResult, "Route result not matched!..");
+            Assert.IsTrue(string.Equals(expectedRouteResult, actionRouteResult, StringComparison.InvariantCultureIgnoreCase), "Route result not matched!..");
+            Assert.IsTrue(string.Equals(expectedCompleteRouteResult, completeActionRouteResult, StringComparison.InvariantCultureIgnoreCase), "Route result not matched!..");
 
 
         }
@@ -122,11 +117,12 @@ namespace Rceptor.Test.Core
 
             var response = _authService.Authentication(authContext, "AuthScope");
 
+            var rawContent = response.GetRawContent().Result;
+            Console.WriteLine("Result content:{0}", rawContent);
+
             Assert.IsTrue(response != null);
             Assert.IsTrue(response.IsSuccess());
-
-
-            // Todo : how to check service response content..
+            Assert.IsTrue(rawContent != null);
         }
 
 
@@ -213,7 +209,7 @@ namespace Rceptor.Test.Core
             Console.WriteLine("-----------------------------------------");
 
             Assert.IsTrue(routeDataInfos.Any());
-            Assert.IsTrue(routeDataInfos.Count == 1);
+            Assert.IsTrue(routeDataInfos.Count == 2);
 
             Console.WriteLine("key:routeData:isquerysegment:isvariable:order");
 
@@ -266,7 +262,7 @@ namespace Rceptor.Test.Core
             Console.WriteLine("Expected route address: {0}", expectedResult);
             Console.WriteLine("Result route address: {0}", actionRouteAddress);
 
-            Assert.IsTrue(string.Equals(actionRouteAddress, 
+            Assert.IsTrue(string.Equals(actionRouteAddress,
                 expectedResult, StringComparison.CurrentCultureIgnoreCase));
 
         }

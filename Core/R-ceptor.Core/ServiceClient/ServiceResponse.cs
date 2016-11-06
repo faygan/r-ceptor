@@ -24,6 +24,19 @@ namespace Rceptor.Core.ServiceClient
 
         public HttpResponseMessage HttpResponse { get; protected set; }
 
+        public async Task<string> GetRawContent()
+        {
+            if (HttpResponse == null)
+                throw new ArgumentNullException(nameof(HttpResponse));
+
+            if (HttpResponse.IsSuccessStatusCode)
+            {
+                return await HttpResponse.Content.ReadAsStringAsync();
+            }
+
+            return null;
+        }
+
         public T GetContentObject<T>()
         {
             var result = GetContentObject();
