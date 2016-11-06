@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="App_Data\PersonDataProvider.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Models\AuthContext.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Controllers\PersonRouteLessController.cs" />

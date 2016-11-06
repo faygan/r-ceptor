@@ -75,6 +75,7 @@ namespace Rceptor.Core.ServiceProxy
                 // Route meta data from method parameters.
                 completeRouteEntries.AddRange(methodRoutesExceptTemplate);
 
+                // Reorder route enries.
                 SetOrderRouteEntries(completeRouteEntries.ToArray());
 
                 routes.AddRange(completeRouteEntries);
@@ -106,8 +107,7 @@ namespace Rceptor.Core.ServiceProxy
                         IsOptional = parameter.IsOptional,
                         ParameterType = parameter.ParameterType,
                         InTemplate = false,
-                        IsQuerySegment = true,
-                        IsComplexType = !parameter.ParameterType.IsValueType
+                        IsQuerySegment = true
                     };
 
                     if (parameter.HasAttribute<FromUriAttribute>())
@@ -155,7 +155,6 @@ namespace Rceptor.Core.ServiceProxy
                     IsVariable = false,
                     Order = routeIndex,
                     InBody = false,
-                    IsComplexType = false,
                     InTemplate = true
                 };
             }
@@ -166,7 +165,6 @@ namespace Rceptor.Core.ServiceProxy
                 Order = routeIndex,
                 IsQuerySegment = false,
                 InBody = false,
-                IsComplexType = false,
                 InTemplate = true
             };
 
@@ -209,7 +207,6 @@ namespace Rceptor.Core.ServiceProxy
                     if (parameter != null)
                     {
                         routeEntry.ParameterType = parameter.ParameterType;
-                        routeEntry.IsComplexType = !routeEntry.ParameterType.IsValueType;
                     }
                 }
             }

@@ -27,7 +27,6 @@ namespace Rceptor.Core.Utils
             return true;
         }
 
-
     }
 
 }

@@ -16,7 +16,7 @@ namespace Rceptor.Core.ServiceProxy
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
 
-            var requestContext = operation.GetRequestContext(arguments, invokeMethod);
+            var requestContext = operation.GetRequestContext(arguments);
             var bindingContext = operation.ServiceContract.ServiceBindingContext;
 
             return InvokeOperation(requestContext, endPoint, operation.ActionBinding.ResultTypeInfos, bindingContext);

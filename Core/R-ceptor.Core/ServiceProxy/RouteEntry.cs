@@ -15,7 +15,7 @@ namespace Rceptor.Core.ServiceProxy
         public int Order { get; set; }
 
         /// <summary>
-        /// Action method parameter add to action uri as query parameter
+        /// Action method parameter add to action uri as query parameter.
         /// </summary>
         public bool IsQuerySegment { get; set; }
 
@@ -24,7 +24,22 @@ namespace Rceptor.Core.ServiceProxy
         public string TypeConstraint { get; set; }
         public string RouteConstraint { get; set; }
         public Type ParameterType { get; set; }
-        public bool IsComplexType { get; set; }
+
+        public bool IsComplexType
+        {
+            get
+            {
+                // If route entry is not a variable it is a static route part. And it is not a complex type.
+                if (!IsVariable)
+                    return false;
+
+                if (ParameterType != null)
+                    return !ParameterType.IsValueType
+                        && ParameterType != typeof(string);
+
+                return false;
+            }
+        }
 
         /// <summary>
         /// Route entry is provided by route tamplate.

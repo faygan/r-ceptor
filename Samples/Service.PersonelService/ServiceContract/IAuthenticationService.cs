@@ -21,6 +21,15 @@ namespace Service.PersonelService.ServiceContract
         [ResponseType(typeof(object))]
         IServiceResponse Authentication(string scope, string userName, string pass);
 
+
+        [HttpGet]
+        [Route("auth")]
+        IServiceResponse Authentication([FromUri] AuthContext context, string scope);
+
+        [HttpGet]
+        [Route("verify")]
+        IServiceResponse VerifyAuthentication([FromUri] AuthContext context);
+
     }
 
 }

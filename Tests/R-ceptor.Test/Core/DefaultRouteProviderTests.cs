@@ -24,7 +24,6 @@ namespace Rceptor.Test.Core
 
             Console.WriteLine("Route template : {0}", routeProvider.RouteTemplate);
             Console.WriteLine("Method signature: Authentiation(string scope, string userName, string pass)");
-
             Console.WriteLine("");
 
             var apiActionRoutes = routeParts.ToArray();
@@ -49,5 +48,6 @@ namespace Rceptor.Test.Core
         {
             return val.ToString().PadRight(len, ' ') + sfx;
         }
+
     }
 }

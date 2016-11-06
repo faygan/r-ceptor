@@ -11,8 +11,16 @@ namespace Rceptor.Core.ServiceClient
     public class RestRequestContext
     {
 
+        /// <summary>
+        /// Resource access http method (Get, Set..).
+        /// </summary>
         public HttpMethod[] ApiMethods { get; set; }
+
+        /// <summary>
+        /// Endpoint of resource.
+        /// </summary>
         public string ActionUri { get; set; }
+
         public HttpMethod DefaultMethod => ApiMethods?.FirstOrDefault();
         public IDictionary<string, object> ContentData { get; set; }
         public ICollection<MediaTypeHeaderValue> MediaTypes { get; set; }

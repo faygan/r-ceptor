@@ -75,6 +75,8 @@
     <Compile Include="ServiceProxy\ApiActionBinding.cs" />
     <Compile Include="ServiceProxy\ApiActionBindingContext.cs" />
     <Compile Include="ServiceProxy\ApiActionBindingFactory.cs" />
+    <Compile Include="ServiceProxy\Provider\IRouteAddressBuilder.cs" />
+    <Compile Include="ServiceProxy\RouteDataInformation.cs" />
     <Compile Include="ServiceProxy\RouteEntry.cs" />
     <Compile Include="ServiceProxy\ApiRouteAddressType.cs" />
     <Compile Include="ServiceProxy\BindingService.cs" />
