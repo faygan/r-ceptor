@@ -34,8 +34,9 @@ namespace Rceptor.Test.Core
         [TestInitialize]
         public void InitializeTest()
         {
-            var channel = new Rceptor.Core.ServiceProxy.ChannelFactory<IPersonService>(new EndpointAddress(ServiceEndpointAddress),
-                _getBindingContext());
+            var channel = new Rceptor.Core.ServiceProxy.ChannelFactory<IPersonService>(
+                new EndpointAddress(ServiceEndpointAddress), _getBindingContext());
+
             _personService = channel.CreateChannel();
         }
 

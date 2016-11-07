@@ -21,10 +21,8 @@ namespace Rceptor.Test.Core
         [TestMethod]
         public void channel_factory_operations_test()
         {
-            var serviceFactory = new Rceptor.Core.ServiceProxy.ChannelFactory<IPersonService>
-            {
-                EndPoint = new EndpointAddress(_endPointAddress)
-            };
+            var serviceFactory = new Rceptor.Core.ServiceProxy
+                .ChannelFactory<IPersonService>(new EndpointAddress(_endPointAddress));
 
             foreach (var operation in serviceFactory.ServiceOperations)
             {
@@ -48,9 +46,9 @@ namespace Rceptor.Test.Core
         [TestMethod]
         public void service_proxy_samples_method_invoke_test()
         {
-            var personService =
-                new Rceptor.Core.ServiceProxy.ChannelFactory<IPersonService>()
-                .CreateChannel(new EndpointAddress(_endPointAddress));
+            var personService = new Rceptor.Core.ServiceProxy
+                .ChannelFactory<IPersonService>(new EndpointAddress(_endPointAddress))
+                .CreateChannel();
 
             Assert.IsNotNull(personService);
 

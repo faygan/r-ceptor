@@ -40,14 +40,10 @@ namespace Rceptor.Core.ServiceProxy
         {
         }
 
-        public ChannelFactory(EndpointAddress endPoint, ServiceBindingContext context = null) : this()
+        public ChannelFactory(EndpointAddress endPoint, ServiceBindingContext context = null)
         {
             EndPoint = endPoint;
             ServiceContext = context;
-        }
-
-        public ChannelFactory()
-        {
             ContractType = typeof(TContract);
 
             InitializeContract(ContractType);
