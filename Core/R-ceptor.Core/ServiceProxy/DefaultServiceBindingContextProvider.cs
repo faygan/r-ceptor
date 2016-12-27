@@ -13,13 +13,13 @@ namespace Rceptor.Core.ServiceProxy
         {
             var context = new ServiceBindingContext();
 
-            if (currentContext?.ClientHandlers != null)
+            if (currentContext?.MessageHandlerProvider != null)
             {
-                context.ClientHandlers = currentContext.ClientHandlers;
+                context.MessageHandlerProvider = currentContext.MessageHandlerProvider;
             }
             else
             {
-                context.ClientHandlers = new DelegatingHandler[] { };
+                context.MessageHandlerProvider = () => new DelegatingHandler[] { };
             }
 
             if (currentContext?.SupportedMediaTypes != null)

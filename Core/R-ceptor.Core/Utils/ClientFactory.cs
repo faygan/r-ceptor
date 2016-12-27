@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.ServiceModel;
 
 namespace Rceptor.Core.Utils
@@ -10,10 +9,14 @@ namespace Rceptor.Core.Utils
 
         public static HttpClient CreateClient(EndpointAddress endPoint, params DelegatingHandler[] clientHandlers)
         {
-            var client = HttpClientFactory.Create(clientHandlers);
+            // TODO:  HttpClient default handler (new HttpClientHandler()) could be set from service context..
+
+            var client = HttpClientFactory.Create(new HttpClientHandler(), clientHandlers);
             client.BaseAddress = endPoint.Uri;
             return client;
         }
+
     }
 
 }
+

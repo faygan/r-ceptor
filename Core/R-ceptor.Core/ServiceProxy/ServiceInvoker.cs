@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -32,12 +33,9 @@ namespace Rceptor.Core.ServiceProxy
 
             try
             {
-                DelegatingHandler[] clientHandlers = null;
+                var clientHandlers = serviceBindingContext.MessageHandlerProvider();
 
-                if (serviceBindingContext.ClientHandlers != null)
-                    clientHandlers = serviceBindingContext.ClientHandlers.ToArray();
-
-                using (var client = new DefaultRestClient(endPoint, clientHandlers))
+                using (var client = new DefaultRestClient(endPoint, clientHandlers.ToArray()))
                 {
                     responseMessage = client.Send(context);
                 }
