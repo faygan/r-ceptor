@@ -22,11 +22,15 @@ namespace Rceptor.Test.Core
         private readonly Func<ServiceBindingContext> _getBindingContext = () =>
             new ServiceBindingContext
             {
-                ClientHandlers = new DelegatingHandler[]
+                MessageHandlerProvider = () =>
                 {
-                    new ClientHandlerAuthSample(),
+                    return new DelegatingHandler[]
+                    {
+                        new ClientHandlerAuthSample(),
                     new ClientHandlerTokenSample()
+                    };
                 }
+
             };
 
         [TestInitialize]
