@@ -50,31 +50,28 @@ namespace Rceptor.Core.ServiceClient
             if (_typeContext == null)
                 throw new ArgumentNullException(nameof(_typeContext));
             if (_typeContext.ServiceReplyType == null)
-                throw new ArgumentException("You must be provide service reply type. Check service implementation.");
+                throw new ArgumentException("Must be provided service reply type. Check service implementation.");
 
-            if (HttpResponse.IsSuccessStatusCode)
+            var httpContent = HttpResponse.Content;
+
+            if (httpContent != null)
             {
-                var responseContent = HttpResponse.Content;
+                Task<object> contentObject;
 
-                if (responseContent != null)
+                try
                 {
-                    Task<object> contentObject;
-
-                    try
-                    {
-                        contentObject = responseContent.ReadAsAsync(_typeContext.ServiceReplyType, _formatters);
-                    }
-                    catch (UnsupportedMediaTypeException typeEx)
-                    {
-                        throw new HttpRequestException(typeEx.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new HttpException(ex.Message);
-                    }
-
-                    return contentObject?.Result;
+                    contentObject = httpContent.ReadAsAsync(_typeContext.ServiceReplyType, _formatters);
                 }
+                catch (UnsupportedMediaTypeException typeEx)
+                {
+                    throw new HttpRequestException(typeEx.Message);
+                }
+                catch (Exception ex)
+                {
+                    throw new HttpException(ex.Message);
+                }
+
+                return contentObject?.Result;
             }
 
             return null;
