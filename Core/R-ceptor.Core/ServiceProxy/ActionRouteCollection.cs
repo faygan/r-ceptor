@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Castle.Core.Internal;
+using Rceptor.Core.Utils;
 
 namespace Rceptor.Core.ServiceProxy
 {

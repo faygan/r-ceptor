@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using Castle.Core.Internal;
+using Rceptor.Core.Utils;
 
 namespace Rceptor.Core.ServiceClient
 {

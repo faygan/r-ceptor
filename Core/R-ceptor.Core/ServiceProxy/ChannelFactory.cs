@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
 using System.Web.Http;
-using Castle.Core.Internal;
 using Castle.DynamicProxy;
 using Rceptor.Core.ServiceProxy.Interceptor;
 using Rceptor.Core.ServiceProxy.Provider;

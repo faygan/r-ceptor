@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Routing;
-using Castle.Core.Internal;
 using Rceptor.Core.ServiceProxy.Provider;
 using Rceptor.Core.Utils;
 
